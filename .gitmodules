@@ -1,0 +1,6 @@
+[submodule "order"]
+	path = order
+	url = git@github.com:aryrk/mini-commerce-kampus-order.git
+[submodule "catalog"]
+	path = catalog
+	url = git@github.com:aryrk/mini-commerce-kampus-catalog.git
