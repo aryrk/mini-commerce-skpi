@@ -1,417 +1,440 @@
 {
-	"info": {
-		"_postman_id": "94b6a49a-8530-4ed7-bce5-5d232547d9bd",
-		"name": "Mini Commerce Kampus - Spring Boot Microservices",
-		"description": "Collection untuk menguji catalog-service dan order-service. Jalankan request berurutan dari atas ke bawah.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "26314566"
-	},
-	"item": [
-		{
-			"name": "Catalog - Create Product",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test('status is 201', function () { pm.response.to.have.status(201); });",
-							"const json = pm.response.json();",
-							"pm.collectionVariables.set('product_id', json.id);",
-							"pm.test('product has ACTIVE status', function () { pm.expect(json.status).to.eql('ACTIVE'); });"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"sku\": \"NASKUN-001\",\n  \"name\": \"Nasi Kuning\",\n  \"description\": \"Nasi kuning paket ayam\",\n  \"price\": 15000,\n  \"stock\": 20\n}"
-				},
-				"url": {
-					"raw": "{{catalog_base_url}}/api/products",
-					"host": [
-						"{{catalog_base_url}}"
-					],
-					"path": [
-						"api",
-						"products"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Catalog - Get Product Detail",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test('status is 200', function () { pm.response.to.have.status(200); });",
-							"pm.test('stock is 20', function () { pm.expect(pm.response.json().stock).to.eql(20); });"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{catalog_base_url}}/api/products/{{product_id}}",
-					"host": [
-						"{{catalog_base_url}}"
-					],
-					"path": [
-						"api",
-						"products",
-						"{{product_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Catalog - List Products",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test('status is 200', function () { pm.response.to.have.status(200); });"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{catalog_base_url}}/api/products",
-					"host": [
-						"{{catalog_base_url}}"
-					],
-					"path": [
-						"api",
-						"products"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Order - Create Order",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test('status is 201', function () { pm.response.to.have.status(201); });",
-							"const json = pm.response.json();",
-							"pm.collectionVariables.set('order_id', json.id);",
-							"pm.test('order status PENDING', function () { pm.expect(json.status).to.eql('PENDING'); });",
-							"pm.test('total amount correct', function () { pm.expect(Number(json.totalAmount)).to.eql(30000); });"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"customerName\": \"Aldy\",\n  \"customerEmail\": \"aldy@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"quantity\": 2\n    }\n  ]\n}"
-				},
-				"url": {
-					"raw": "{{order_base_url}}/api/orders",
-					"host": [
-						"{{order_base_url}}"
-					],
-					"path": [
-						"api",
-						"orders"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "ORDER - List Order",
-			"request": {
-				"method": "GET",
-				"header": []
-			},
-			"response": []
-		},
-		{
-			"name": "Catalog - Check Stock After Order",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test('status is 200', function () { pm.response.to.have.status(200); });",
-							"pm.test('stock reduced to 18', function () { pm.expect(pm.response.json().stock).to.eql(18); });"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{catalog_base_url}}/api/products/{{product_id}}",
-					"host": [
-						"{{catalog_base_url}}"
-					],
-					"path": [
-						"api",
-						"products",
-						"{{product_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Order - Get Order Detail",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test('status is 200', function () { pm.response.to.have.status(200); });"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{order_base_url}}/api/orders/{{order_id}}",
-					"host": [
-						"{{order_base_url}}"
-					],
-					"path": [
-						"api",
-						"orders",
-						"{{order_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Order - Pay Order",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test('status is 200', function () { pm.response.to.have.status(200); });",
-							"pm.test('status PAID', function () { pm.expect(pm.response.json().status).to.eql('PAID'); });"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "PATCH",
-				"header": [],
-				"url": {
-					"raw": "{{order_base_url}}/api/orders/{{order_id}}/pay",
-					"host": [
-						"{{order_base_url}}"
-					],
-					"path": [
-						"api",
-						"orders",
-						"{{order_id}}",
-						"pay"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Order - Pay Again Should Fail",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test('status is 400', function () { pm.response.to.have.status(400); });"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "PATCH",
-				"header": [],
-				"url": {
-					"raw": "{{order_base_url}}/api/orders/{{order_id}}/pay",
-					"host": [
-						"{{order_base_url}}"
-					],
-					"path": [
-						"api",
-						"orders",
-						"{{order_id}}",
-						"pay"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Order - Create Order For Cancel",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test('status is 201', function () { pm.response.to.have.status(201); });",
-							"pm.collectionVariables.set('cancel_order_id', pm.response.json().id);"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"customerName\": \"Budi\",\n  \"customerEmail\": \"budi@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"quantity\": 3\n    }\n  ]\n}"
-				},
-				"url": {
-					"raw": "{{order_base_url}}/api/orders",
-					"host": [
-						"{{order_base_url}}"
-					],
-					"path": [
-						"api",
-						"orders"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Order - Cancel Order",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test('status is 200', function () { pm.response.to.have.status(200); });",
-							"pm.test('status CANCELLED', function () { pm.expect(pm.response.json().status).to.eql('CANCELLED'); });"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "PATCH",
-				"header": [],
-				"url": {
-					"raw": "{{order_base_url}}/api/orders/{{cancel_order_id}}/cancel",
-					"host": [
-						"{{order_base_url}}"
-					],
-					"path": [
-						"api",
-						"orders",
-						"{{cancel_order_id}}",
-						"cancel"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Order - Create Invalid Order Quantity Should Fail",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test('status is 400', function () { pm.response.to.have.status(400); });"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"customerName\": \"Invalid\",\n  \"customerEmail\": \"invalid@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"quantity\": 0\n    }\n  ]\n}"
-				},
-				"url": {
-					"raw": "{{order_base_url}}/api/orders",
-					"host": [
-						"{{order_base_url}}"
-					],
-					"path": [
-						"api",
-						"orders"
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"variable": [
-		{
-			"key": "catalog_base_url",
-			"value": "http://localhost:8081"
-		},
-		{
-			"key": "order_base_url",
-			"value": "http://localhost:8082"
-		},
-		{
-			"key": "product_id",
-			"value": ""
-		},
-		{
-			"key": "order_id",
-			"value": ""
-		},
-		{
-			"key": "cancel_order_id",
-			"value": ""
-		}
-	]
+  "info": {
+    "_postman_id": "94b6a49a-8530-4ed7-bce5-5d232547d9bd",
+    "name": "Mini Commerce Kampus - Spring Boot Microservices",
+    "description": "Collection untuk menguji catalog-service dan order-service. Jalankan request berurutan dari atas ke bawah.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "26314566"
+  },
+  "item": [
+    {
+      "name": "Catalog - Create Product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 201', function () { pm.response.to.have.status(201); });",
+              "const json = pm.response.json();",
+              "pm.collectionVariables.set('product_id', json.id);",
+              "pm.test('product has ACTIVE status', function () { pm.expect(json.status).to.eql('ACTIVE'); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sku\": \"NASKUN-001\",\n  \"name\": \"Nasi Kuning\",\n  \"description\": \"Nasi kuning paket ayam\",\n  \"price\": 15000,\n  \"stock\": 20\n}"
+        },
+        "url": {
+          "raw": "{{catalog_base_url}}/api/products",
+          "host": [
+            "{{catalog_base_url}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Catalog - Get Product Detail",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('stock is 20', function () { pm.expect(pm.response.json().stock).to.eql(20); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{catalog_base_url}}/api/products/{{product_id}}",
+          "host": [
+            "{{catalog_base_url}}"
+          ],
+          "path": [
+            "api",
+            "products",
+            "{{product_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Catalog - List Products",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{catalog_base_url}}/api/products",
+          "host": [
+            "{{catalog_base_url}}"
+          ],
+          "path": [
+            "api",
+            "products"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Order - Create Order",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 201', function () { pm.response.to.have.status(201); });",
+              "const json = pm.response.json();",
+              "pm.collectionVariables.set('order_id', json.id);",
+              "pm.test('order status PENDING', function () { pm.expect(json.status).to.eql('PENDING'); });",
+              "pm.test('total amount correct', function () { pm.expect(Number(json.totalAmount)).to.eql(30000); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerName\": \"Aldy\",\n  \"customerEmail\": \"aldy@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"quantity\": 2\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{order_base_url}}/api/orders",
+          "host": [
+            "{{order_base_url}}"
+          ],
+          "path": [
+            "api",
+            "orders"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ORDER - List Order",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{order_base_url}}/api/orders",
+          "host": [
+            "{{order_base_url}}"
+          ],
+          "path": [
+            "api",
+            "orders"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Catalog - Check Stock After Order",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('stock reduced to 18', function () { pm.expect(pm.response.json().stock).to.eql(18); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{catalog_base_url}}/api/products/{{product_id}}",
+          "host": [
+            "{{catalog_base_url}}"
+          ],
+          "path": [
+            "api",
+            "products",
+            "{{product_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Order - Get Order Detail",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{order_base_url}}/api/orders/{{order_id}}",
+          "host": [
+            "{{order_base_url}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "{{order_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Order - Pay Order",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('status PAID', function () { pm.expect(pm.response.json().status).to.eql('PAID'); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "{{order_base_url}}/api/orders/{{order_id}}/pay",
+          "host": [
+            "{{order_base_url}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "{{order_id}}",
+            "pay"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Order - Pay Again Should Fail",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 400', function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "{{order_base_url}}/api/orders/{{order_id}}/pay",
+          "host": [
+            "{{order_base_url}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "{{order_id}}",
+            "pay"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Order - Create Order For Cancel",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 201', function () { pm.response.to.have.status(201); });",
+              "pm.collectionVariables.set('cancel_order_id', pm.response.json().id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerName\": \"Budi\",\n  \"customerEmail\": \"budi@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"quantity\": 3\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{order_base_url}}/api/orders",
+          "host": [
+            "{{order_base_url}}"
+          ],
+          "path": [
+            "api",
+            "orders"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Order - Cancel Order",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('status CANCELLED', function () { pm.expect(pm.response.json().status).to.eql('CANCELLED'); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "{{order_base_url}}/api/orders/{{cancel_order_id}}/cancel",
+          "host": [
+            "{{order_base_url}}"
+          ],
+          "path": [
+            "api",
+            "orders",
+            "{{cancel_order_id}}",
+            "cancel"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Order - Create Invalid Order Quantity Should Fail",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 400', function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerName\": \"Invalid\",\n  \"customerEmail\": \"invalid@example.com\",\n  \"items\": [\n    {\n      \"productId\": \"{{product_id}}\",\n      \"quantity\": 0\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{order_base_url}}/api/orders",
+          "host": [
+            "{{order_base_url}}"
+          ],
+          "path": [
+            "api",
+            "orders"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "catalog_base_url",
+      "value": "http://localhost:8081"
+    },
+    {
+      "key": "order_base_url",
+      "value": "http://localhost:8082"
+    },
+    {
+      "key": "product_id",
+      "value": ""
+    },
+    {
+      "key": "order_id",
+      "value": ""
+    },
+    {
+      "key": "cancel_order_id",
+      "value": ""
+    }
+  ]
 }
